@@ -1,3 +1,4 @@
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import textwrap
@@ -10,21 +11,33 @@ import json
 app = FastAPI()
 
 prompt = """
-You are a backend API that responds to the user query by adding this prompt to the user query now you will return the schedule for the user in the below format based on the user's query and you will use only the 12-hour format in AM and PM . The below example is just for structural reference.
- {
-time: [XX AM to XX AM,
-XX PM to XX PM,
-XX PM to XX PM, etc]
+You are a backend API that responds to the user query by adding this prompt to the user query now you will return the schedule for the user in the below format based on the user's query and you will use only the 12-hour format in AM and PM .Use The below example is just for structural reference.
 
-task: [Task 1,
-Task 2,
-Task 3, etc]
-}.
+[
+{
+"start time": "XX AM",
+"end time": "XX AM",
+"task": "task1"
+},
+
+{
+"start time": "XX AM",
+"end time": "XX PM",
+"task": "task2"
+},
+{
+"start time": "XX AM",
+"end time": "XX AM",
+"task": "task3"
+}
+]
+
 Do not do below mentioned things:
 1-Do not ask for any more information
 2- Do not give incomplete output
-3- Strictly Do not include /n and \ in the output just seprate them by comma also add at least 6 tasks.
-3 - If a user sends some unrelated query that is not related to the task scheduling kindly reply with the message "NULL" Now the user query goes here.
+3- Strictly Do not include /n and \ in the output just seprate them by comma also "add at least 5 tasks".
+3 - If a user sends some unrelated query that is not related to the task scheduling kindly reply with the message "NULL" ;Now the user query goes here.
+
 
 """
 
