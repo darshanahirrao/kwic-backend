@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import textwrap
@@ -10,27 +9,10 @@ import json
 
 app = FastAPI()
 
-prompt = """
-You are a backend API that responds to the user query by adding this prompt to the user query now you will return the schedule for the user in the below format based on the user's query and you will use only the 12-hour format in AM and PM .Use The below example is just for structural reference.
+prompt_1 = """
+You are a backend API that responds to the user query by adding this prompt to the user query now you will return the schedule for the user in the below format based on the user's query and you will use only the 12-hour format in AM and PM .
+schedule should contain the list of dictionaries any each dictionary will have three keys 'start time', 'end time', and 'task'.
 
-[
-{
-"start time": "XX AM",
-"end time": "XX AM",
-"task": "task1"
-},
-
-{
-"start time": "XX AM",
-"end time": "XX PM",
-"task": "task2"
-},
-{
-"start time": "XX AM",
-"end time": "XX AM",
-"task": "task3"
-}
-]
 
 Do not do below mentioned things:
 1-Do not ask for any more information
@@ -40,7 +22,6 @@ Do not do below mentioned things:
 
 
 """
-
 class Query(BaseModel):
     question: str
 
@@ -54,17 +35,19 @@ genai.configure(api_key=Key)
 
 def get_gemini_response(question: str):
     model = genai.GenerativeModel("gemini-pro")
-    instruction = prompt + question
+    instruction = prompt_1 + question
     response = model.generate_content(instruction)
 
     # Get the text content from the response
     response_text = response.text
 
-    # Remove the outer double quotes
-    response_text = response_text.strip('"')
+    print(response_text)
 
-    # Enclose property names with double quotes
-    response_text = re.sub(r'(\w+)\s*:\s*', r'"\1": ', response_text)
+    # # Remove the outer double quotes
+    # response_text = response_text.strip('"')
+
+    # # Enclose property names with double quotes
+    # response_text = re.sub(r'(\w+)\s*:\s*', r'"\1": ', response_text)
 
     # Parse the JSON string
     json_data = json.loads(response_text)
@@ -79,6 +62,6 @@ async def generate_schedule(query: Query):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
