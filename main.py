@@ -9,6 +9,38 @@ import json
 
 app = FastAPI()
 
+prompt = """
+You are a backend API that responds to the user query by adding this prompt to the user query now you will return the schedule for the user in the below format based on the user's query and you will use only the 12-hour format in AM and PM .Use The below example is just for structural reference.
+
+[
+{
+"start time": "XX AM",
+"end time": "XX AM",
+"task": "task1"
+},
+
+{
+"start time": "XX AM",
+"end time": "XX PM",
+"task": "task2"
+},
+{
+"start time": "XX AM",
+"end time": "XX AM",
+"task": "task3"
+}
+]
+
+Do not do below mentioned things:
+1-Do not ask for any more information
+2- Do not give incomplete output
+3- Strictly Do not include /n and \ in the output just seprate them by comma also "add at least 5 tasks".
+3 - If a user sends some unrelated query that is not related to the task scheduling kindly reply with the message "NULL" ;Now the user query goes here.
+
+
+"""
+
+
 prompt_1 = """
 You are a backend API that responds to the user query by adding this prompt to the user query now you will return the schedule for the user in the below format based on the user's query and you will use only the 12-hour format in AM and PM .
 schedule should contain the list of dictionaries any each dictionary will have three keys 'start time', 'end time', and 'task'.
@@ -62,6 +94,6 @@ async def generate_schedule(query: Query):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
